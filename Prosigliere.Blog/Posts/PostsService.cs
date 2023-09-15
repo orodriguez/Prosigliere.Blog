@@ -6,17 +6,27 @@ namespace Prosigliere.Blog.Posts;
 
 public class PostsService : IPostsService
 {
+    private readonly IValidator<CreatePostRequest> _validator;
     private readonly IRepository<Post> _blogPostsRepository;
     private readonly Func<DateTime> _currentTime;
 
-    public PostsService(IRepository<Post> blogPostsRepository, Func<DateTime> currentTime)
+    public PostsService(
+        IValidator<CreatePostRequest> validator, 
+        Func<DateTime> currentTime,
+        IRepository<Post> blogPostsRepository)
     {
-        _blogPostsRepository = blogPostsRepository;
+        _validator = validator;
         _currentTime = currentTime;
+        _blogPostsRepository = blogPostsRepository;
     }
 
-    public PostResponse Create(CreatePostRequest request)
+    public (PostResponse?, Errors?) Create(CreatePostRequest request)
     {
+        var errors = _validator.Validate(request);
+
+        if (errors.Any())
+            return (null, errors);
+        
         var blogPost = new Post
         {
             Title = request.Title,
@@ -25,10 +35,10 @@ public class PostsService : IPostsService
 
         _blogPostsRepository.Add(blogPost);
 
-        return new PostResponse(
+        return (new PostResponse(
             Id: blogPost.Id,
             Title: blogPost.Title,
             Content: blogPost.Content,
-            CreatedAt: _currentTime());
+            CreatedAt: _currentTime()), null);
     }
 }

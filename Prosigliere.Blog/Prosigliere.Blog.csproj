@@ -10,4 +10,8 @@
       <ProjectReference Include="..\Prosigliere.Blog.Api\Prosigliere.Blog.Api.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="FluentValidation" Version="11.7.1" />
+    </ItemGroup>
+
 </Project>

@@ -10,4 +10,7 @@ public class FakeRepository<T> : IRepository<T> where T : IEntity
         entity.Id = _nextId++;
         _entities.Add(entity);
     }
+
+    public T? ById(int id) => 
+        _entities.FirstOrDefault(entity => entity.Id == id);
 }
