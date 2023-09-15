@@ -22,4 +22,8 @@
         </PackageReference>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Prosigliere.Blog\Prosigliere.Blog.csproj" />
+    </ItemGroup>
+
 </Project>
