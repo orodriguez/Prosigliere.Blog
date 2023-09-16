@@ -2,5 +2,5 @@ namespace Prosigliere.Blog.Api.Comments;
 
 public interface ICommentsService
 {
-    CreateCommentResponse Create(CreateCommentRequest request);
+    Response<CreateCommentResponse> Create(CreateCommentRequest request);
 }

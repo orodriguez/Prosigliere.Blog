@@ -27,6 +27,6 @@ public abstract class AbstractServiceTests
     protected Response<PostResponse> GetPostById(int id) => 
         _provider.GetRequiredService<IPostsService>().ById(id);
 
-    protected void CreateComment(CreateCommentRequest request) => 
+    protected Response<CreateCommentResponse> CreateComment(CreateCommentRequest request) => 
         _provider.GetRequiredService<ICommentsService>().Create(request);
 }
