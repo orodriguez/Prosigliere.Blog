@@ -7,8 +7,11 @@ public class CreateCommentRequestValidator : AbstractValidator<CreateCommentRequ
 {
     private const int ContentMaximumLength = 1_000;
 
-    public CreateCommentRequestValidator() =>
+    public CreateCommentRequestValidator()
+    {
+        RuleFor(request => request.PostId).NotEmpty();
         RuleFor(request => request.Content)
             .NotEmpty()
             .MaximumLength(ContentMaximumLength);
+    }
 }

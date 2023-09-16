@@ -35,6 +35,16 @@ public class CommentsServiceTests : AbstractServiceTests
         var error = Assert.Single(errors[nameof(CreateCommentRequest.Content)]);
         Assert.Equal(expectedError, error);
     }
+    
+    [Fact]
+    public void Create_PostIdZero()
+    {
+        var errors = CreateComment(new ValidCreateCommentRequest(PostId: 0))
+            .AssertValidationErrors();
+
+        var error = Assert.Single(errors[nameof(CreateCommentRequest.PostId)]);
+        Assert.Equal("'Post Id' must not be empty.", error);
+    }
 
     // TODO: CommentsServiceTests.Create PostId NotFound
     // TODO: CommentsServiceTests.Create_ValidationErrors
