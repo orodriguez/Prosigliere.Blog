@@ -45,7 +45,16 @@ public class CommentsServiceTests : AbstractServiceTests
         var error = Assert.Single(errors[nameof(CreateCommentRequest.PostId)]);
         Assert.Equal("'Post Id' must not be empty.", error);
     }
+    
+    [Fact]
+    public void Create_PostNotFound()
+    {
+        const int unknownPostId = 42;
+        var error = CreateComment(new ValidCreateCommentRequest(PostId: unknownPostId))
+            .AssertRecordNotFound();
 
-    // TODO: CommentsServiceTests.Create PostId NotFound
+        Assert.Equal("Unable to add comment: Post with PostId = 42 can not be found.", error);
+    }
+    
     // TODO: CommentsServiceTests.Create_ValidationErrors
 }

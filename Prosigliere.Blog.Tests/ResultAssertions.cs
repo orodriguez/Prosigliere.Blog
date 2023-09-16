@@ -10,4 +10,7 @@ public static class ResultAssertions
     
     public static Errors AssertValidationErrors<TValue>(this Result<TValue> result) => 
         Assert.IsType<Result<TValue>.ValidationErrors>(result).Errors;
+    
+    public static string AssertRecordNotFound<TValue>(this Result<TValue> result) => 
+        Assert.IsType<Result<TValue>.RecordNotFound>(result).Message;
 }

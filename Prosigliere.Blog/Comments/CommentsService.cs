@@ -30,6 +30,10 @@ public class CommentsService : ICommentsService
             return new Result<CreateCommentResponse>.ValidationErrors(errors);
         
         var post = _postsRepository.ById(request.PostId);
+        if (post == null)
+            return new Result<CreateCommentResponse>.RecordNotFound(
+                CreatePostNotFoundErrorMessage(request));
+        
         var comment = new Comment
         {
             Post = post,
@@ -45,4 +49,7 @@ public class CommentsService : ICommentsService
             Content: comment.Content, 
             CreatedAt: comment.CreatedAt));
     }
+
+    private static string CreatePostNotFoundErrorMessage(CreateCommentRequest request) => 
+        $"Unable to add comment: Post with {nameof(CreateCommentRequest.PostId)} = {request.PostId} can not be found.";
 }
