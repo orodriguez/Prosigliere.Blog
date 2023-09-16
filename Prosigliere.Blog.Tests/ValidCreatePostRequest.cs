@@ -2,7 +2,7 @@ using Prosigliere.Blog.Api.Posts;
 
 namespace Prosigliere.Blog.Tests;
 
-public record ValidPost() : CreatePostRequest(ValidTitle, ValidContent)
+public record ValidCreatePostRequest() : CreatePostRequest(ValidTitle, ValidContent)
 {
     public const string ValidTitle = "Good News";
 

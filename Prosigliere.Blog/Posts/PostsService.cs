@@ -42,18 +42,24 @@ public class PostsService : IPostsService
             Title: post.Title,
             Content: post.Content,
             CreatedAt: post.CreatedAt,
-            Comments: new CommentResponse[0]), null);
+            Comments: post.Comments.Select(CreatePostResponseComment)), null);
     }
 
     public PostResponse ById(int id)
     {
         var post = _postsRepository.ById(id);
         
-        return new PostResponse(
+        return CreatePostResponse(post);
+    }
+
+    private static PostResponse CreatePostResponse(Post? post) =>
+        new(
             Id: post.Id, 
             Title: post.Title, 
             Content: post.Content, 
             CreatedAt: post.CreatedAt,
-            Comments: post.Comments.Select(p => new CommentResponse()));
-    }
+            Comments: post.Comments.Select(CreatePostResponseComment));
+
+    private static PostResponse.Comment CreatePostResponseComment(Comment c) => 
+        new(Id: c.Id, Content: c.Content, CreatedAt: c.CreatedAt);
 }

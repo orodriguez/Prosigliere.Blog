@@ -1,5 +1,7 @@
 using Prosigliere.Blog.Api;
+using Prosigliere.Blog.Api.Comments;
 using Prosigliere.Blog.Api.Posts;
+using Prosigliere.Blog.Comments;
 using Prosigliere.Blog.Entities;
 using Prosigliere.Blog.Posts;
 
@@ -7,23 +9,48 @@ namespace Prosigliere.Blog.Tests;
 
 public abstract class AbstractServiceTests
 {
-    protected readonly IPostsService Service;
+    private readonly IPostsService _postsService;
     protected DateTime CurrentTime = DateTime.Now;
-    protected readonly FakeRepository<Post> FakePostsRepository;
+    private ICommentsService _commentsService;
 
     protected AbstractServiceTests()
     {
-        FakePostsRepository = new FakeRepository<Post>();
+        FakeRepository<Post> fakePostsRepository = new();
         
-        Service = new PostsService(
+        _postsService = new PostsService(
             new FluentValidatorAdapter<CreatePostRequest>(new CreatePostRequestValidator()),
-            postsRepository: FakePostsRepository,
+            postsRepository: fakePostsRepository,
             getCurrentTime: () => CurrentTime);
+
+        _commentsService = new CommentsService(
+            getCurrentTime: () => CurrentTime, 
+            commentsRepository: new FakeCommentsRepository(fakePostsRepository),
+            postsRepository: fakePostsRepository);
     }
 
     protected (PostResponse?, Errors?) CreatePost(CreatePostRequest request) => 
-        Service.Create(request);
+        _postsService.Create(request);
 
     protected PostResponse GetPostById(int id) => 
-        Service.ById(id);
+        _postsService.ById(id);
+
+    protected void CreateComment(CreateCommentRequest request) => 
+        _commentsService.Create(request);
+}
+
+public class FakeCommentsRepository : FakeRepository<Comment>
+{
+    private readonly IRepository<Post> _posts;
+
+    public FakeCommentsRepository(IRepository<Post> posts) => 
+        _posts = posts;
+
+    public override void Add(Comment entity)
+    {
+        base.Add(entity);
+        var post = _posts.ById(entity.Post.Id);
+        entity.PostId = entity.Post.Id;
+        entity.Post = post;
+        post.Comments.Add(entity);
+    }
 }

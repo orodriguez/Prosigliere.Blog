@@ -4,7 +4,7 @@ using Xunit;
 
 namespace Prosigliere.Blog.Tests;
 
-public class PostsAbstractServiceTests : AbstractServiceTests
+public class PostsServiceTests : AbstractServiceTests
 {
     [Fact]
     public void Create()
@@ -12,16 +12,14 @@ public class PostsAbstractServiceTests : AbstractServiceTests
         CurrentTime = DateTime.Parse("2023-09-15 5:00PM");
         
         var (blogPost, _) = CreatePost(new(
-            ValidPost.ValidTitle,
-            ValidPost.ValidContent));
+            ValidCreatePostRequest.ValidTitle,
+            ValidCreatePostRequest.ValidContent));
         
         Assert.NotNull(blogPost);
         Assert.Equal(1, blogPost.Id);
-        Assert.Equal(ValidPost.ValidTitle, blogPost.Title);
-        Assert.Equal(ValidPost.ValidContent, blogPost.Content);
+        Assert.Equal(ValidCreatePostRequest.ValidTitle, blogPost.Title);
+        Assert.Equal(ValidCreatePostRequest.ValidContent, blogPost.Content);
         Assert.Equal(CurrentTime, blogPost.CreatedAt);
-        
-        Assert.NotNull(FakePostsRepository.ById(1));
     }
 
     [Theory]
@@ -32,7 +30,7 @@ public class PostsAbstractServiceTests : AbstractServiceTests
         "The length of 'Title' must be 80 characters or fewer. You entered 91 characters.")]
     public void Create_TitleValidations(string title, string expectedError)
     {
-        var (_, errors) = CreatePost(new ValidPost { Title = title });
+        var (_, errors) = CreatePost(new ValidCreatePostRequest { Title = title });
         
         Assert.NotNull(errors);
         var error = Assert.Single(errors[nameof(CreatePostRequest.Title)]);
@@ -44,7 +42,7 @@ public class PostsAbstractServiceTests : AbstractServiceTests
     [InlineData("", "'Content' must not be empty.")]
     public void Create_ContentValidations(string content, string expectedError)
     {
-        var (_, errors) = CreatePost(new ValidPost { Content = content });
+        var (_, errors) = CreatePost(new ValidCreatePostRequest { Content = content });
 
         Assert.NotNull(errors);
         var error = Assert.Single(errors[nameof(CreatePostRequest.Content)]);
@@ -54,18 +52,39 @@ public class PostsAbstractServiceTests : AbstractServiceTests
     [Fact]
     public void ById()
     {
-        var (createdPost, _) = CreatePost(new ValidPost());
+        var (createdPost, _) = CreatePost(new ValidCreatePostRequest());
 
         Assert.NotNull(createdPost);
         var retrievedPost = GetPostById(createdPost.Id);
         
         Assert.NotNull(retrievedPost);
         Assert.Equal(createdPost.Id, retrievedPost.Id);
-        Assert.Equal(ValidPost.ValidTitle, retrievedPost.Title);
-        Assert.Equal(ValidPost.ValidContent, retrievedPost.Content);
+        Assert.Equal(ValidCreatePostRequest.ValidTitle, retrievedPost.Title);
+        Assert.Equal(ValidCreatePostRequest.ValidContent, retrievedPost.Content);
         Assert.Equal(CurrentTime, retrievedPost.CreatedAt);
         Assert.Empty(retrievedPost.Comments);
     }
+
+    [Fact]
+    public void ById_WithComments()
+    {
+        var (createdPost, _) = CreatePost(new ValidCreatePostRequest());
+        
+        Assert.NotNull(createdPost);
+        
+        CreateComment(new ValidCreateCommentRequest(PostId: createdPost.Id));
+
+        var retrievedPost = GetPostById(createdPost.Id);
+
+        var comment = Assert.Single(retrievedPost.Comments);
+        
+        Assert.Equal(ValidCreateCommentRequest.ValidContent, comment.Content);
+        Assert.Equal(CurrentTime, comment.CreatedAt);
+    }
     
-    // Test ById with comments
+    // TODO: Test ById NotFound
+    
+    // TODO: CommentsServiceTests.Create
+    // TODO: CommentsServiceTests.Create PostId NotFound
+    // TODO: CommentsServiceTests.Create_ValidationErrors
 }
