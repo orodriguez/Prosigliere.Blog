@@ -50,10 +50,27 @@ public class PostsService : IPostsService
     {
         var post = _postsRepository.ById(id);
         
-        return new Result<PostResponse>.Success(CreatePostResponse(post));
+        // TODO: Post not found test
+        
+        return new Result<PostResponse>.Success(CreateDetailedResponse(post));
     }
 
-    private static PostResponse CreatePostResponse(Post? post) =>
+    public Result<IEnumerable<ShortPostResponse>> Get()
+    {
+        var posts = _postsRepository.All()
+            .Select(CreateShortResponse);
+        
+        return new Result<IEnumerable<ShortPostResponse>>.Success(posts);
+    }
+
+    private static ShortPostResponse CreateShortResponse(Post post) =>
+        new(
+            Id: post.Id, 
+            Title: post.Title, 
+            CreatedAt: post.CreatedAt, 
+            CommentsCount: post.CommentsCount());
+
+    private static PostResponse CreateDetailedResponse(Post? post) =>
         new(
             Id: post.Id, 
             Title: post.Title, 

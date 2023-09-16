@@ -13,4 +13,6 @@ public class FakeRepository<T> : IRepository<T> where T : IEntity
 
     public T? ById(int id) => 
         _entities.FirstOrDefault(entity => entity.Id == id);
+
+    public IEnumerable<T> All() => _entities;
 }

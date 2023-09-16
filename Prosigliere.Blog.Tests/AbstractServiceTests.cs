@@ -23,11 +23,16 @@ public abstract class AbstractServiceTests
             .BuildServiceProvider();
 
     protected Result<PostResponse> CreatePost(CreatePostRequest request) => 
-        _provider.GetRequiredService<IPostsService>().Create(request);
+        CreatePostsService().Create(request);
 
     protected Result<PostResponse> GetPostById(int id) => 
-        _provider.GetRequiredService<IPostsService>().ById(id);
+        CreatePostsService().ById(id);
 
     protected Result<CreateCommentResponse> CreateComment(CreateCommentRequest request) => 
         _provider.GetRequiredService<ICommentsService>().Create(request);
+
+    protected Result<IEnumerable<ShortPostResponse>> GetPosts() => CreatePostsService().Get();
+
+    private IPostsService CreatePostsService() => 
+        _provider.GetRequiredService<IPostsService>();
 }

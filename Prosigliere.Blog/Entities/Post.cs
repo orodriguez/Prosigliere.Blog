@@ -9,6 +9,6 @@ public class Post : IEntity
     public required string Content { get; set; }
     public ICollection<Comment> Comments { get; set; }
     public DateTime CreatedAt { get; set; }
-
     public Post() => Comments = new List<Comment>();
+    public int CommentsCount() => Comments.Count;
 }

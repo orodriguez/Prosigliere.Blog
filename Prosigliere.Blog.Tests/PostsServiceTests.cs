@@ -79,4 +79,24 @@ public class PostsServiceTests : AbstractServiceTests
         Assert.Equal(ValidCreateCommentRequest.ValidContent, comment.Content);
         Assert.Equal(CurrentTime, comment.CreatedAt);
     }
+
+    [Fact]
+    public void Get()
+    {
+        var post1 = CreatePost(new ValidCreatePostRequest { Title = "Post 1" });
+        var post2 = CreatePost(new ValidCreatePostRequest { Title = "Post 2" });
+
+        var allPosts = GetPosts().AssertSuccess().ToArray();
+        
+        Assert.Equal(2, allPosts.Length);
+
+        var firstPost = allPosts.First();
+        
+        Assert.Equal(1, firstPost.Id);
+        Assert.Equal("Post 1", firstPost.Title);
+        Assert.Equal(CurrentTime, firstPost.CreatedAt);
+        Assert.Equal(0, firstPost.CommentsCount);
+    }
+    
+    // TODO: Get post with comments
 }

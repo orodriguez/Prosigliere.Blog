@@ -4,4 +4,5 @@ public interface IPostsService
 {
     Result<PostResponse> Create(CreatePostRequest request);
     Result<PostResponse> ById(int id);
+    Result<IEnumerable<ShortPostResponse>> Get();
 }
