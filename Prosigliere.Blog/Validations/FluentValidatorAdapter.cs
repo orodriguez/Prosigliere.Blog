@@ -1,7 +1,6 @@
-using FluentValidation.Results;
 using Prosigliere.Blog.Api;
 
-namespace Prosigliere.Blog;
+namespace Prosigliere.Blog.Validations;
 
 /// <summary>
 /// Adapts FluentValidator adapters to Prosigliere.Blog.IValidator<T> interface.

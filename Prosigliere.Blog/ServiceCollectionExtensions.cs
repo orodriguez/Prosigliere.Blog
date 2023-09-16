@@ -3,6 +3,7 @@ using Prosigliere.Blog.Api.Comments;
 using Prosigliere.Blog.Api.Posts;
 using Prosigliere.Blog.Comments;
 using Prosigliere.Blog.Posts;
+using Prosigliere.Blog.Validations;
 
 namespace Prosigliere.Blog;
 

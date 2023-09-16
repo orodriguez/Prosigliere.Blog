@@ -1,6 +1,6 @@
 using Prosigliere.Blog.Api;
 
-namespace Prosigliere.Blog;
+namespace Prosigliere.Blog.Validations;
 
 public interface IValidator<in T>
 {

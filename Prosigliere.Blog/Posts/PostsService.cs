@@ -2,6 +2,7 @@ using Prosigliere.Blog.Api;
 using Prosigliere.Blog.Api.Comments;
 using Prosigliere.Blog.Api.Posts;
 using Prosigliere.Blog.Entities;
+using Prosigliere.Blog.Validations;
 
 namespace Prosigliere.Blog.Posts;
 
@@ -21,12 +22,12 @@ public class PostsService : IPostsService
         _postsRepository = postsRepository;
     }
 
-    public Response<PostResponse> Create(CreatePostRequest request)
+    public Result<PostResponse> Create(CreatePostRequest request)
     {
         var errors = _validator.Validate(request);
 
         if (errors.Any())
-            return new Response<PostResponse>.ValidationErrors(errors);
+            return new Result<PostResponse>.ValidationErrors(errors);
         
         var post = new Post
         {
@@ -37,7 +38,7 @@ public class PostsService : IPostsService
 
         _postsRepository.Add(post);
 
-        return new Response<PostResponse>.Success(new PostResponse(
+        return new Result<PostResponse>.Success(new PostResponse(
             Id: post.Id,
             Title: post.Title,
             Content: post.Content,
@@ -45,11 +46,11 @@ public class PostsService : IPostsService
             Comments: post.Comments.Select(CreatePostResponseComment)));
     }
 
-    public Response<PostResponse> ById(int id)
+    public Result<PostResponse> ById(int id)
     {
         var post = _postsRepository.ById(id);
         
-        return new Response<PostResponse>.Success(CreatePostResponse(post));
+        return new Result<PostResponse>.Success(CreatePostResponse(post));
     }
 
     private static PostResponse CreatePostResponse(Post? post) =>

@@ -21,12 +21,12 @@ public abstract class AbstractServiceTests
             .AddTransient<Func<DateTime>>(_ => () => CurrentTime)
             .BuildServiceProvider();
 
-    protected Response<PostResponse> CreatePost(CreatePostRequest request) => 
+    protected Result<PostResponse> CreatePost(CreatePostRequest request) => 
         _provider.GetRequiredService<IPostsService>().Create(request);
 
-    protected Response<PostResponse> GetPostById(int id) => 
+    protected Result<PostResponse> GetPostById(int id) => 
         _provider.GetRequiredService<IPostsService>().ById(id);
 
-    protected Response<CreateCommentResponse> CreateComment(CreateCommentRequest request) => 
+    protected Result<CreateCommentResponse> CreateComment(CreateCommentRequest request) => 
         _provider.GetRequiredService<ICommentsService>().Create(request);
 }

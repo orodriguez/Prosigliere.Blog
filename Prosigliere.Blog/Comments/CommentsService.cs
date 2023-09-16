@@ -20,7 +20,7 @@ public class CommentsService : ICommentsService
         _postsRepository = postsRepository;
     }
 
-    public Response<CreateCommentResponse> Create(CreateCommentRequest request)
+    public Result<CreateCommentResponse> Create(CreateCommentRequest request)
     {
         var post = _postsRepository.ById(request.PostId);
         var comment = new Comment
@@ -32,7 +32,7 @@ public class CommentsService : ICommentsService
 
         _commentsRepository.Add(comment);
 
-        return new Response<CreateCommentResponse>.Success(new(
+        return new Result<CreateCommentResponse>.Success(new(
             Id: comment.Id,
             PostId: request.PostId,
             Content: comment.Content, 
