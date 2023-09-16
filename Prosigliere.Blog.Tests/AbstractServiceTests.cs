@@ -1,3 +1,5 @@
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Prosigliere.Blog.Api;
 using Prosigliere.Blog.Api.Comments;
 using Prosigliere.Blog.Api.Posts;
@@ -9,48 +11,22 @@ namespace Prosigliere.Blog.Tests;
 
 public abstract class AbstractServiceTests
 {
-    private readonly IPostsService _postsService;
     protected DateTime CurrentTime = DateTime.Now;
-    private ICommentsService _commentsService;
+    private readonly ServiceProvider _provider;
 
-    protected AbstractServiceTests()
-    {
-        FakeRepository<Post> fakePostsRepository = new();
-        
-        _postsService = new PostsService(
-            new FluentValidatorAdapter<CreatePostRequest>(new CreatePostRequestValidator()),
-            postsRepository: fakePostsRepository,
-            getCurrentTime: () => CurrentTime);
-
-        _commentsService = new CommentsService(
-            getCurrentTime: () => CurrentTime, 
-            commentsRepository: new FakeCommentsRepository(fakePostsRepository),
-            postsRepository: fakePostsRepository);
-    }
+    protected AbstractServiceTests() =>
+        _provider = new ServiceCollection()
+            .AddProsigliereBlog()
+            .AddProsigliereBlogFakeRepositories()
+            .AddTransient<Func<DateTime>>(_ => () => CurrentTime)
+            .BuildServiceProvider();
 
     protected (PostResponse?, Errors?) CreatePost(CreatePostRequest request) => 
-        _postsService.Create(request);
+        _provider.GetRequiredService<IPostsService>().Create(request);
 
     protected PostResponse GetPostById(int id) => 
-        _postsService.ById(id);
+        _provider.GetRequiredService<IPostsService>().ById(id);
 
     protected void CreateComment(CreateCommentRequest request) => 
-        _commentsService.Create(request);
-}
-
-public class FakeCommentsRepository : FakeRepository<Comment>
-{
-    private readonly IRepository<Post> _posts;
-
-    public FakeCommentsRepository(IRepository<Post> posts) => 
-        _posts = posts;
-
-    public override void Add(Comment entity)
-    {
-        base.Add(entity);
-        var post = _posts.ById(entity.Post.Id);
-        entity.PostId = entity.Post.Id;
-        entity.Post = post;
-        post.Comments.Add(entity);
-    }
+        _provider.GetRequiredService<ICommentsService>().Create(request);
 }
