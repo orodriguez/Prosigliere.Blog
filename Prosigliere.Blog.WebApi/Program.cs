@@ -1,12 +1,17 @@
 using Prosigliere.Blog;
 using Prosigliere.Blog.Fakes;
+using Prosigliere.Blog.WebApi.Storage;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services
-    .AddProsigliereBlog()
-    .AddProsigliereBlogFakeRepositories();
+    .AddProsigliereBlog();
+
+if (builder.Configuration["Storage"] == "Fake")
+    builder.Services.AddProsigliereBlogFakeRepositories();
+else
+    builder.Services.AddProsigliereBlogEntityFrameworkRepositories(builder.Configuration);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
