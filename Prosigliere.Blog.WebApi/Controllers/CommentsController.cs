@@ -19,5 +19,9 @@ public class CommentsController : ControllerBase
     public ActionResult<CommentResponse> Post([FromRoute] int postId, [FromBody] CreateCommentRequest request) =>
         _service.Create(postId, request).ToActionResult();
     
-    // TODO: Get All Comments
+    [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<CommentResponse>))]
+    [ProducesResponseType(StatusCodes.Status404NotFound, Type = typeof(string))]
+    public ActionResult<IEnumerable<CommentResponse>> Get(int postId) =>
+        _service.Get(postId).ToActionResult();
 }

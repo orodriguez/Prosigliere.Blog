@@ -10,13 +10,13 @@ public class CommentsService : ICommentsService
 {
     private readonly IValidator<CreateCommentRequest> _validator;
     private readonly Func<DateTime> _getCurrentTime;
-    private readonly IRepository<Comment> _commentsRepository;
+    private readonly ICommentsRepository _commentsRepository;
     private readonly IRepository<Post> _postsRepository;
 
     public CommentsService(
         IValidator<CreateCommentRequest> validator, 
         Func<DateTime> getCurrentTime, 
-        IRepository<Comment> commentsRepository, IRepository<Post> postsRepository)
+        ICommentsRepository commentsRepository, IRepository<Post> postsRepository)
     {
         _validator = validator;
         _getCurrentTime = getCurrentTime;
@@ -40,6 +40,18 @@ public class CommentsService : ICommentsService
         _commentsRepository.Add(comment);
 
         return Success(CreateResponse(comment));
+    }
+
+    public Result<IEnumerable<CommentResponse>> Get(int postId)
+    {
+        var post = _postsRepository.ById(postId);
+        if (post == null)
+            return RecordNotFound<IEnumerable<CommentResponse>>(
+                $"Post with id = {postId} can not be found.");
+
+        var comments = _commentsRepository.ByPost(postId);
+        
+        return Success(comments.Select(CreateResponse));
     }
 
     private Comment CreateComment(CreateCommentRequest request, Post post) =>

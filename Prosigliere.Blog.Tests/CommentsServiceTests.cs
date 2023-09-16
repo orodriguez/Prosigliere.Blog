@@ -43,4 +43,27 @@ public class CommentsServiceTests : AbstractServiceTests
 
         Assert.Equal("Unable to add comment: Post with postId = 42 can not be found.", error);
     }
+
+    [Fact]
+    public void Get()
+    {
+        var post = CreatePost(new ValidCreatePostRequest()).AssertSuccess();
+
+        CreateComment(post.Id, new ValidCreateCommentRequest()).AssertSuccess();
+        CreateComment(post.Id, new ValidCreateCommentRequest()).AssertSuccess();
+        CreateComment(post.Id, new ValidCreateCommentRequest()).AssertSuccess();
+
+        var comments = GetComments(post.Id).AssertSuccess().ToArray();
+        
+        Assert.Equal(3, comments.Length);
+    }
+    
+    [Fact]
+    public void Get_PostNotFound()
+    {
+        var unknownPostId = -1;
+        var message = GetComments(unknownPostId).AssertRecordNotFound();
+        
+        Assert.Equal("Post with id = -1 can not be found.", message);
+    }
 }

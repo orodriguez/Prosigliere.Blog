@@ -1,8 +1,9 @@
+using Prosigliere.Blog.Comments;
 using Prosigliere.Blog.Entities;
 
 namespace Prosigliere.Blog.Fakes;
 
-public class FakeCommentsRepository : FakeRepository<Comment>
+public class FakeCommentsRepository : FakeRepository<Comment>, ICommentsRepository
 {
     private readonly IRepository<Post> _posts;
 
@@ -17,4 +18,7 @@ public class FakeCommentsRepository : FakeRepository<Comment>
         entity.Post = post;
         post.Comments.Add(entity);
     }
+
+    public IEnumerable<Comment> ByPost(int postId) => 
+        All().Where(comment => comment.PostId == postId);
 }
