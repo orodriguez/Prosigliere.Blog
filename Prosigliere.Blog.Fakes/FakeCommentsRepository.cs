@@ -1,6 +1,6 @@
 using Prosigliere.Blog.Entities;
 
-namespace Prosigliere.Blog.Tests.Fakes;
+namespace Prosigliere.Blog.Fakes;
 
 public class FakeCommentsRepository : FakeRepository<Comment>
 {

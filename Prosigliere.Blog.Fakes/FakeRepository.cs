@@ -1,8 +1,8 @@
-namespace Prosigliere.Blog.Tests.Fakes;
+namespace Prosigliere.Blog.Fakes;
 
 public class FakeRepository<T> : IRepository<T> where T : IEntity
 {
-    private readonly List<T> _entities = new List<T>();
+    private readonly List<T> _entities = new();
     private int _nextId = 1;
 
     public virtual void Add(T entity)

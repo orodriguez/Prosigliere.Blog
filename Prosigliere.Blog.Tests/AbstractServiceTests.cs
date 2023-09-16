@@ -5,8 +5,8 @@ using Prosigliere.Blog.Api.Comments;
 using Prosigliere.Blog.Api.Posts;
 using Prosigliere.Blog.Comments;
 using Prosigliere.Blog.Entities;
+using Prosigliere.Blog.Fakes;
 using Prosigliere.Blog.Posts;
-using Prosigliere.Blog.Tests.Fakes;
 
 namespace Prosigliere.Blog.Tests;
 

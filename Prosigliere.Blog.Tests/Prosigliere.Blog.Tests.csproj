@@ -24,6 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Prosigliere.Blog.Fakes\Prosigliere.Blog.Fakes.csproj" />
       <ProjectReference Include="..\Prosigliere.Blog\Prosigliere.Blog.csproj" />
     </ItemGroup>
 
