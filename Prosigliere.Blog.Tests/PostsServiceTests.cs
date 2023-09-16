@@ -79,8 +79,4 @@ public class PostsServiceTests : AbstractServiceTests
         Assert.Equal(ValidCreateCommentRequest.ValidContent, comment.Content);
         Assert.Equal(CurrentTime, comment.CreatedAt);
     }
-
-    // TODO: CommentsServiceTests.Create
-    // TODO: CommentsServiceTests.Create PostId NotFound
-    // TODO: CommentsServiceTests.Create_ValidationErrors
 }
