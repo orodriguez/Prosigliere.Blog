@@ -1,4 +1,5 @@
 using Prosigliere.Blog.Api;
+using Prosigliere.Blog.Api.Comments;
 using Prosigliere.Blog.Api.Posts;
 using Prosigliere.Blog.Entities;
 
@@ -7,17 +8,17 @@ namespace Prosigliere.Blog.Posts;
 public class PostsService : IPostsService
 {
     private readonly IValidator<CreatePostRequest> _validator;
-    private readonly IRepository<Post> _blogPostsRepository;
-    private readonly Func<DateTime> _currentTime;
+    private readonly IRepository<Post> _postsRepository;
+    private readonly Func<DateTime> _getCurrentTime;
 
     public PostsService(
         IValidator<CreatePostRequest> validator, 
-        Func<DateTime> currentTime,
-        IRepository<Post> blogPostsRepository)
+        Func<DateTime> getCurrentTime,
+        IRepository<Post> postsRepository)
     {
         _validator = validator;
-        _currentTime = currentTime;
-        _blogPostsRepository = blogPostsRepository;
+        _getCurrentTime = getCurrentTime;
+        _postsRepository = postsRepository;
     }
 
     public (PostResponse?, Errors?) Create(CreatePostRequest request)
@@ -27,18 +28,32 @@ public class PostsService : IPostsService
         if (errors.Any())
             return (null, errors);
         
-        var blogPost = new Post
+        var post = new Post
         {
             Title = request.Title,
-            Content = request.Content
+            Content = request.Content,
+            CreatedAt = _getCurrentTime(),
         };
 
-        _blogPostsRepository.Add(blogPost);
+        _postsRepository.Add(post);
 
         return (new PostResponse(
-            Id: blogPost.Id,
-            Title: blogPost.Title,
-            Content: blogPost.Content,
-            CreatedAt: _currentTime()), null);
+            Id: post.Id,
+            Title: post.Title,
+            Content: post.Content,
+            CreatedAt: post.CreatedAt,
+            Comments: new CommentResponse[0]), null);
+    }
+
+    public PostResponse ById(int id)
+    {
+        var post = _postsRepository.ById(id);
+        
+        return new PostResponse(
+            Id: post.Id, 
+            Title: post.Title, 
+            Content: post.Content, 
+            CreatedAt: post.CreatedAt,
+            Comments: post.Comments.Select(p => new CommentResponse()));
     }
 }

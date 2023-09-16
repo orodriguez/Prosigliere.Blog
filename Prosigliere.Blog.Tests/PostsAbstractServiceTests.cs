@@ -1,3 +1,4 @@
+using Prosigliere.Blog.Api;
 using Prosigliere.Blog.Api.Posts;
 using Xunit;
 
@@ -49,4 +50,22 @@ public class PostsAbstractServiceTests : AbstractServiceTests
         var error = Assert.Single(errors[nameof(CreatePostRequest.Content)]);
         Assert.Equal(expectedError, error);
     }
+
+    [Fact]
+    public void ById()
+    {
+        var (createdPost, _) = CreatePost(new ValidPost());
+
+        Assert.NotNull(createdPost);
+        var retrievedPost = GetPostById(createdPost.Id);
+        
+        Assert.NotNull(retrievedPost);
+        Assert.Equal(createdPost.Id, retrievedPost.Id);
+        Assert.Equal(ValidPost.ValidTitle, retrievedPost.Title);
+        Assert.Equal(ValidPost.ValidContent, retrievedPost.Content);
+        Assert.Equal(CurrentTime, retrievedPost.CreatedAt);
+        Assert.Empty(retrievedPost.Comments);
+    }
+    
+    // Test ById with comments
 }

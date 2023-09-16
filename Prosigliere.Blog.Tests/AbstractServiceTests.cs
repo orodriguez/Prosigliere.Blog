@@ -17,10 +17,13 @@ public abstract class AbstractServiceTests
         
         Service = new PostsService(
             new FluentValidatorAdapter<CreatePostRequest>(new CreatePostRequestValidator()),
-            blogPostsRepository: FakePostsRepository,
-            currentTime: () => CurrentTime);
+            postsRepository: FakePostsRepository,
+            getCurrentTime: () => CurrentTime);
     }
 
     protected (PostResponse?, Errors?) CreatePost(CreatePostRequest request) => 
         Service.Create(request);
+
+    protected PostResponse GetPostById(int id) => 
+        Service.ById(id);
 }
