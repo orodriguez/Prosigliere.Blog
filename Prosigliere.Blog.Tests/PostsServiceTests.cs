@@ -1,4 +1,3 @@
-using Prosigliere.Blog.Api;
 using Prosigliere.Blog.Api.Posts;
 using Prosigliere.Blog.Tests.Samples;
 using Xunit;
@@ -93,8 +92,8 @@ public class PostsServiceTests : AbstractServiceTests
     [Fact]
     public void Get()
     {
-        var post1 = CreatePost(new ValidCreatePostRequest { Title = "Post 1" });
-        var post2 = CreatePost(new ValidCreatePostRequest { Title = "Post 2" });
+        CreatePost(new ValidCreatePostRequest { Title = "Post 1" }).AssertSuccess();
+        CreatePost(new ValidCreatePostRequest { Title = "Post 2" }).AssertSuccess();
 
         var allPosts = GetPosts().AssertSuccess().ToArray();
         
@@ -108,5 +107,17 @@ public class PostsServiceTests : AbstractServiceTests
         Assert.Equal(0, firstPost.CommentsCount);
     }
     
-    // TODO: Get post with comments
+    [Fact]
+    public void Get_WithComments()
+    {
+        var createdPost = CreatePost(new ValidCreatePostRequest { Title = "Post 1" }).AssertSuccess();
+
+        foreach (var _ in Enumerable.Range(1, 3))
+            CreateComment(new ValidCreateCommentRequest(createdPost.Id)).AssertSuccess();
+
+        var allPosts = GetPosts().AssertSuccess().ToArray();
+        
+        var post = Assert.Single(allPosts);
+        Assert.Equal(3, post.CommentsCount);
+    }
 }
