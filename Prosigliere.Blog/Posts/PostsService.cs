@@ -1,8 +1,8 @@
 using Prosigliere.Blog.Api;
-using Prosigliere.Blog.Api.Comments;
 using Prosigliere.Blog.Api.Posts;
 using Prosigliere.Blog.Entities;
 using Prosigliere.Blog.Validations;
+using static Prosigliere.Blog.Result;
 
 namespace Prosigliere.Blog.Posts;
 
@@ -25,36 +25,40 @@ public class PostsService : IPostsService
     public Result<PostResponse> Create(CreatePostRequest request)
     {
         var errors = _validator.Validate(request);
-
         if (errors.Any())
-            return new Result<PostResponse>.ValidationErrors(errors);
+            return ValidationErrors<PostResponse>(errors);
         
-        var post = new Post
+        var post = CreatePost(request);
+
+        _postsRepository.Add(post);
+
+        return Success(CreateResponse(post));
+    }
+
+    private Post CreatePost(CreatePostRequest request) =>
+        new()
         {
             Title = request.Title,
             Content = request.Content,
             CreatedAt = _getCurrentTime(),
         };
 
-        _postsRepository.Add(post);
-
-        return new Result<PostResponse>.Success(new PostResponse(
+    private static PostResponse CreateResponse(Post post) =>
+        new(
             Id: post.Id,
             Title: post.Title,
             Content: post.Content,
             CreatedAt: post.CreatedAt,
-            Comments: post.Comments.Select(CreatePostResponseComment)));
-    }
+            Comments: post.Comments.Select(CreatePostResponseComment));
 
     public Result<PostResponse> ById(int id)
     {
         var post = _postsRepository.ById(id);
-
         if (post == null)
-            return new Result<PostResponse>.RecordNotFound(
+            return RecordNotFound<PostResponse>(
                 $"Post with PostId = {id} can not be found.");
         
-        return new Result<PostResponse>.Success(CreateDetailedResponse(post));
+        return Success(CreateDetailedResponse(post));
     }
 
     public Result<IEnumerable<ShortPostResponse>> Get()
@@ -62,7 +66,7 @@ public class PostsService : IPostsService
         var posts = _postsRepository.All()
             .Select(CreateShortResponse);
 
-        return new Result<IEnumerable<ShortPostResponse>>.Success(posts);
+        return Success(posts);
     }
 
     private static ShortPostResponse CreateShortResponse(Post post) =>
@@ -72,7 +76,7 @@ public class PostsService : IPostsService
             CreatedAt: post.CreatedAt, 
             CommentsCount: post.CommentsCount());
 
-    private static PostResponse CreateDetailedResponse(Post? post) =>
+    private static PostResponse CreateDetailedResponse(Post post) =>
         new(
             Id: post.Id, 
             Title: post.Title, 

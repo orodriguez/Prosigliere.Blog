@@ -68,7 +68,7 @@ public class PostsServiceTests : AbstractServiceTests
     public void ById_PostNotFound()
     {
         const int unknownPostId = 42;
-        var error = GetPostById(42)
+        var error = GetPostById(unknownPostId)
             .AssertRecordNotFound();
 
         Assert.Equal("Post with PostId = 42 can not be found.", error);

@@ -2,6 +2,7 @@ using Prosigliere.Blog.Api;
 using Prosigliere.Blog.Api.Comments;
 using Prosigliere.Blog.Entities;
 using Prosigliere.Blog.Validations;
+using static Prosigliere.Blog.Result;
 
 namespace Prosigliere.Blog.Comments;
 
@@ -27,28 +28,34 @@ public class CommentsService : ICommentsService
     {
         var errors = _validator.Validate(request);
         if (errors.Any())
-            return new Result<CreateCommentResponse>.ValidationErrors(errors);
+            return ValidationErrors<CreateCommentResponse>(errors);
         
         var post = _postsRepository.ById(request.PostId);
         if (post == null)
-            return new Result<CreateCommentResponse>.RecordNotFound(
+            return RecordNotFound<CreateCommentResponse>(
                 CreatePostNotFoundErrorMessage(request));
         
-        var comment = new Comment
+        var comment = CreateComment(request, post);
+
+        _commentsRepository.Add(comment);
+
+        return Success(CreateResponse(request, comment));
+    }
+
+    private Comment CreateComment(CreateCommentRequest request, Post post) =>
+        new()
         {
             Post = post,
             Content = request.Content,
             CreatedAt = _getCurrentTime()
         };
 
-        _commentsRepository.Add(comment);
-
-        return new Result<CreateCommentResponse>.Success(new(
+    private static CreateCommentResponse CreateResponse(CreateCommentRequest request, Comment comment) =>
+        new(
             Id: comment.Id,
             PostId: request.PostId,
             Content: comment.Content, 
-            CreatedAt: comment.CreatedAt));
-    }
+            CreatedAt: comment.CreatedAt);
 
     private static string CreatePostNotFoundErrorMessage(CreateCommentRequest request) => 
         $"Unable to add comment: Post with {nameof(CreateCommentRequest.PostId)} = {request.PostId} can not be found.";
