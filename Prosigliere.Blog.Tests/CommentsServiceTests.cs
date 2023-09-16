@@ -55,6 +55,4 @@ public class CommentsServiceTests : AbstractServiceTests
 
         Assert.Equal("Unable to add comment: Post with PostId = 42 can not be found.", error);
     }
-    
-    // TODO: CommentsServiceTests.Create_ValidationErrors
 }
