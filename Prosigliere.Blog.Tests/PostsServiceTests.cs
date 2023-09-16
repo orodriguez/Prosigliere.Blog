@@ -64,6 +64,16 @@ public class PostsServiceTests : AbstractServiceTests
         Assert.Equal(CurrentTime, retrievedPost.CreatedAt);
         Assert.Empty(retrievedPost.Comments);
     }
+    
+    [Fact]
+    public void ById_PostNotFound()
+    {
+        const int unknownPostId = 42;
+        var error = GetPostById(42)
+            .AssertRecordNotFound();
+
+        Assert.Equal("Post with PostId = 42 can not be found.", error);
+    }
 
     [Fact]
     public void ById_WithComments()

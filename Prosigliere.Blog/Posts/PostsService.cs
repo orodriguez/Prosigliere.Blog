@@ -49,8 +49,10 @@ public class PostsService : IPostsService
     public Result<PostResponse> ById(int id)
     {
         var post = _postsRepository.ById(id);
-        
-        // TODO: Post not found test
+
+        if (post == null)
+            return new Result<PostResponse>.RecordNotFound(
+                $"Post with PostId = {id} can not be found.");
         
         return new Result<PostResponse>.Success(CreateDetailedResponse(post));
     }
@@ -59,7 +61,7 @@ public class PostsService : IPostsService
     {
         var posts = _postsRepository.All()
             .Select(CreateShortResponse);
-        
+
         return new Result<IEnumerable<ShortPostResponse>>.Success(posts);
     }
 
