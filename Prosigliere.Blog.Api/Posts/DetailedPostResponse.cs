@@ -1,14 +1,11 @@
-using System.Runtime.CompilerServices;
-using Prosigliere.Blog.Api.Comments;
-
 namespace Prosigliere.Blog.Api.Posts;
 
-public record PostResponse(
+public record DetailedPostResponse(
     int Id,
     string Title,
     string Content,
     DateTime CreatedAt,
-    IEnumerable<PostResponse.Comment> Comments)
+    IEnumerable<DetailedPostResponse.Comment> Comments)
 {
     public record Comment(int Id, 
         string Content, 

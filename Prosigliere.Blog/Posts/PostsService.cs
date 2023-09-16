@@ -22,11 +22,11 @@ public class PostsService : IPostsService
         _postsRepository = postsRepository;
     }
 
-    public Result<PostResponse> Create(CreatePostRequest request)
+    public Result<DetailedPostResponse> Create(CreatePostRequest request)
     {
         var errors = _validator.Validate(request);
         if (errors.Any())
-            return ValidationErrors<PostResponse>(errors);
+            return ValidationErrors<DetailedPostResponse>(errors);
         
         var post = CreatePost(request);
 
@@ -43,7 +43,7 @@ public class PostsService : IPostsService
             CreatedAt = _getCurrentTime(),
         };
 
-    private static PostResponse CreateResponse(Post post) =>
+    private static DetailedPostResponse CreateResponse(Post post) =>
         new(
             Id: post.Id,
             Title: post.Title,
@@ -51,11 +51,11 @@ public class PostsService : IPostsService
             CreatedAt: post.CreatedAt,
             Comments: post.Comments.Select(CreatePostResponseComment));
 
-    public Result<PostResponse> ById(int id)
+    public Result<DetailedPostResponse> ById(int id)
     {
         var post = _postsRepository.ById(id);
         if (post == null)
-            return RecordNotFound<PostResponse>(
+            return RecordNotFound<DetailedPostResponse>(
                 $"Post with PostId = {id} can not be found.");
         
         return Success(CreateDetailedResponse(post));
@@ -76,7 +76,7 @@ public class PostsService : IPostsService
             CreatedAt: post.CreatedAt, 
             CommentsCount: post.CommentsCount());
 
-    private static PostResponse CreateDetailedResponse(Post post) =>
+    private static DetailedPostResponse CreateDetailedResponse(Post post) =>
         new(
             Id: post.Id, 
             Title: post.Title, 
@@ -84,6 +84,6 @@ public class PostsService : IPostsService
             CreatedAt: post.CreatedAt,
             Comments: post.Comments.Select(CreatePostResponseComment));
 
-    private static PostResponse.Comment CreatePostResponseComment(Comment c) => 
+    private static DetailedPostResponse.Comment CreatePostResponseComment(Comment c) => 
         new(Id: c.Id, Content: c.Content, CreatedAt: c.CreatedAt);
 }

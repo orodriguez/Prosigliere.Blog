@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.10" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Prosigliere.Blog.Api\Prosigliere.Blog.Api.csproj" />
+      <ProjectReference Include="..\Prosigliere.Blog.Fakes\Prosigliere.Blog.Fakes.csproj" />
+      <ProjectReference Include="..\Prosigliere.Blog\Prosigliere.Blog.csproj" />
+    </ItemGroup>
+
+</Project>

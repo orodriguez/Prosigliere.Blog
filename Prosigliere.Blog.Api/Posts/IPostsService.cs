@@ -2,7 +2,7 @@ namespace Prosigliere.Blog.Api.Posts;
 
 public interface IPostsService
 {
-    Result<PostResponse> Create(CreatePostRequest request);
-    Result<PostResponse> ById(int id);
+    Result<DetailedPostResponse> Create(CreatePostRequest request);
+    Result<DetailedPostResponse> ById(int id);
     Result<IEnumerable<ShortPostResponse>> Get();
 }
