@@ -21,12 +21,12 @@ public class PostsService : IPostsService
         _postsRepository = postsRepository;
     }
 
-    public (PostResponse?, Errors?) Create(CreatePostRequest request)
+    public Response<PostResponse> Create(CreatePostRequest request)
     {
         var errors = _validator.Validate(request);
 
         if (errors.Any())
-            return (null, errors);
+            return new Response<PostResponse>.ValidationErrors(errors);
         
         var post = new Post
         {
@@ -37,19 +37,19 @@ public class PostsService : IPostsService
 
         _postsRepository.Add(post);
 
-        return (new PostResponse(
+        return new Response<PostResponse>.Success(new PostResponse(
             Id: post.Id,
             Title: post.Title,
             Content: post.Content,
             CreatedAt: post.CreatedAt,
-            Comments: post.Comments.Select(CreatePostResponseComment)), null);
+            Comments: post.Comments.Select(CreatePostResponseComment)));
     }
 
-    public PostResponse ById(int id)
+    public Response<PostResponse> ById(int id)
     {
         var post = _postsRepository.ById(id);
         
-        return CreatePostResponse(post);
+        return new Response<PostResponse>.Success(CreatePostResponse(post));
     }
 
     private static PostResponse CreatePostResponse(Post? post) =>

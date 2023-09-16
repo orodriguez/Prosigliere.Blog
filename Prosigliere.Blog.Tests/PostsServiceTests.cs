@@ -10,12 +10,14 @@ public class PostsServiceTests : AbstractServiceTests
     public void Create()
     {
         CurrentTime = DateTime.Parse("2023-09-15 5:00PM");
-        
-        var (blogPost, _) = CreatePost(new(
+
+        var response = CreatePost(new(
             ValidCreatePostRequest.ValidTitle,
             ValidCreatePostRequest.ValidContent));
-        
-        Assert.NotNull(blogPost);
+
+        // TODO: Create custom assertion
+        var blogPost = Assert.IsType<Response<PostResponse>.Success>(response).Value;
+
         Assert.Equal(1, blogPost.Id);
         Assert.Equal(ValidCreatePostRequest.ValidTitle, blogPost.Title);
         Assert.Equal(ValidCreatePostRequest.ValidContent, blogPost.Content);
@@ -26,25 +28,25 @@ public class PostsServiceTests : AbstractServiceTests
     [InlineData("", "'Title' must not be empty.")]
     [InlineData(null, "'Title' must not be empty.")]
     [InlineData(
-        "This is a very long title, it should not be valid, because it is toooooooooooooooooooo long", 
+        "This is a very long title, it should not be valid, because it is toooooooooooooooooooo long",
         "The length of 'Title' must be 80 characters or fewer. You entered 91 characters.")]
     public void Create_TitleValidations(string title, string expectedError)
     {
-        var (_, errors) = CreatePost(new ValidCreatePostRequest { Title = title });
-        
-        Assert.NotNull(errors);
+        var response = CreatePost(new ValidCreatePostRequest { Title = title });
+
+        var errors = Assert.IsType<Response<PostResponse>.ValidationErrors>(response).Errors;
         var error = Assert.Single(errors[nameof(CreatePostRequest.Title)]);
         Assert.Equal(expectedError, error);
     }
-    
+
     [Theory]
     [InlineData(null, "'Content' must not be empty.")]
     [InlineData("", "'Content' must not be empty.")]
     public void Create_ContentValidations(string content, string expectedError)
     {
-        var (_, errors) = CreatePost(new ValidCreatePostRequest { Content = content });
-
-        Assert.NotNull(errors);
+        var response = CreatePost(new ValidCreatePostRequest { Content = content });
+        
+        var errors = Assert.IsType<Response<PostResponse>.ValidationErrors>(response).Errors;
         var error = Assert.Single(errors[nameof(CreatePostRequest.Content)]);
         Assert.Equal(expectedError, error);
     }
@@ -52,10 +54,13 @@ public class PostsServiceTests : AbstractServiceTests
     [Fact]
     public void ById()
     {
-        var (createdPost, _) = CreatePost(new ValidCreatePostRequest());
+        var createPostResponse = CreatePost(new ValidCreatePostRequest());
 
-        Assert.NotNull(createdPost);
-        var retrievedPost = GetPostById(createdPost.Id);
+        var createdPost = Assert.IsType<Response<PostResponse>.Success>(createPostResponse).Value;
+        
+        var retrievePostResponse = GetPostById(createdPost.Id);
+        
+        var retrievedPost = Assert.IsType<Response<PostResponse>.Success>(retrievePostResponse).Value;
         
         Assert.NotNull(retrievedPost);
         Assert.Equal(createdPost.Id, retrievedPost.Id);
@@ -68,22 +73,22 @@ public class PostsServiceTests : AbstractServiceTests
     [Fact]
     public void ById_WithComments()
     {
-        var (createdPost, _) = CreatePost(new ValidCreatePostRequest());
-        
-        Assert.NotNull(createdPost);
-        
+        var createResponse = CreatePost(new ValidCreatePostRequest());
+
+        var createdPost = Assert.IsType<Response<PostResponse>.Success>(createResponse).Value;
+
         CreateComment(new ValidCreateCommentRequest(PostId: createdPost.Id));
 
-        var retrievedPost = GetPostById(createdPost.Id);
+        var retrievedResponse = GetPostById(createdPost.Id);
 
-        var comment = Assert.Single(retrievedPost.Comments);
+        var retrievePost = Assert.IsType<Response<PostResponse>.Success>(retrievedResponse).Value;
         
+        var comment = Assert.Single(retrievePost.Comments);
+
         Assert.Equal(ValidCreateCommentRequest.ValidContent, comment.Content);
         Assert.Equal(CurrentTime, comment.CreatedAt);
     }
-    
-    // TODO: Test ById NotFound
-    
+
     // TODO: CommentsServiceTests.Create
     // TODO: CommentsServiceTests.Create PostId NotFound
     // TODO: CommentsServiceTests.Create_ValidationErrors
