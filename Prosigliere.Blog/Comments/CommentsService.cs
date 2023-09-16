@@ -1,20 +1,23 @@
 using Prosigliere.Blog.Api;
 using Prosigliere.Blog.Api.Comments;
 using Prosigliere.Blog.Entities;
+using Prosigliere.Blog.Validations;
 
 namespace Prosigliere.Blog.Comments;
 
 public class CommentsService : ICommentsService
 {
+    private readonly IValidator<CreateCommentRequest> _validator;
     private readonly Func<DateTime> _getCurrentTime;
     private readonly IRepository<Comment> _commentsRepository;
     private readonly IRepository<Post> _postsRepository;
 
     public CommentsService(
+        IValidator<CreateCommentRequest> validator, 
         Func<DateTime> getCurrentTime, 
-        IRepository<Comment> commentsRepository, 
-        IRepository<Post> postsRepository)
+        IRepository<Comment> commentsRepository, IRepository<Post> postsRepository)
     {
+        _validator = validator;
         _getCurrentTime = getCurrentTime;
         _commentsRepository = commentsRepository;
         _postsRepository = postsRepository;
@@ -22,6 +25,10 @@ public class CommentsService : ICommentsService
 
     public Result<CreateCommentResponse> Create(CreateCommentRequest request)
     {
+        var errors = _validator.Validate(request);
+        if (errors.Any())
+            return new Result<CreateCommentResponse>.ValidationErrors(errors);
+        
         var post = _postsRepository.ById(request.PostId);
         var comment = new Comment
         {

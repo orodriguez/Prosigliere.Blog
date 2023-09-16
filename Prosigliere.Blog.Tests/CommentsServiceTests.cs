@@ -1,3 +1,4 @@
+using Prosigliere.Blog.Api.Comments;
 using Prosigliere.Blog.Tests.Samples;
 using Xunit;
 
@@ -9,17 +10,32 @@ public class CommentsServiceTests : AbstractServiceTests
     public void Create()
     {
         var createdPost = CreatePost(new ValidCreatePostRequest()).AssertSuccess();
-        
+
         var createdComment = CreateComment(new(
-            PostId: createdPost.Id, 
+            PostId: createdPost.Id,
             Content: ValidCreateCommentRequest.ValidContent)).AssertSuccess();
-        
+
         Assert.Equal(1, createdComment.Id);
         Assert.Equal(createdPost.Id, createdComment.PostId);
         Assert.Equal(ValidCreateCommentRequest.ValidContent, createdComment.Content);
         Assert.Equal(CurrentTime, createdComment.CreatedAt);
     }
-    
+
+    [Theory]
+    [InlineData(null, "'Content' must not be empty.")]
+    [InlineData("", "'Content' must not be empty.")]
+    public void Create_ContentValidations(string content, string expectedError)
+    {
+        var createdPost = CreatePost(new ValidCreatePostRequest()).AssertSuccess();
+
+        var errors = CreateComment(new(
+            PostId: createdPost.Id,
+            Content: content)).AssertValidationErrors();
+
+        var error = Assert.Single(errors[nameof(CreateCommentRequest.Content)]);
+        Assert.Equal(expectedError, error);
+    }
+
     // TODO: CommentsServiceTests.Create PostId NotFound
     // TODO: CommentsServiceTests.Create_ValidationErrors
 }

@@ -13,7 +13,9 @@ public static class ServiceCollectionExtensions
     {
         services.AddTransient<IPostsService, PostsService>();
         services.AddTransient<IValidator<CreatePostRequest>, FluentValidatorAdapter<CreatePostRequest>>();
+        services.AddTransient<IValidator<CreateCommentRequest>, FluentValidatorAdapter<CreateCommentRequest>>();
         services.AddTransient<FluentValidation.IValidator<CreatePostRequest>, CreatePostRequestValidator>();
+        services.AddTransient<FluentValidation.IValidator<CreateCommentRequest>, CreateCommentRequestValidator>();
         services.AddTransient<ICommentsService, CommentsService>();
         services.AddTransient<Func<DateTime>>(_ => () => DateTime.Now);
         return services;
