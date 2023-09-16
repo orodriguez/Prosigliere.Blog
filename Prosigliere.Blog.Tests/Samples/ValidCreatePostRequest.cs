@@ -1,6 +1,6 @@
 using Prosigliere.Blog.Api.Posts;
 
-namespace Prosigliere.Blog.Tests;
+namespace Prosigliere.Blog.Tests.Samples;
 
 public record ValidCreatePostRequest() : CreatePostRequest(ValidTitle, ValidContent)
 {

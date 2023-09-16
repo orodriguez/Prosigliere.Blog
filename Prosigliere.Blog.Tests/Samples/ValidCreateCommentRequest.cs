@@ -1,7 +1,6 @@
-using System.Runtime.Intrinsics.Arm;
 using Prosigliere.Blog.Api.Comments;
 
-namespace Prosigliere.Blog.Tests;
+namespace Prosigliere.Blog.Tests.Samples;
 
 public record ValidCreateCommentRequest(int PostId) : CreateCommentRequest(PostId, ValidContent)
 {

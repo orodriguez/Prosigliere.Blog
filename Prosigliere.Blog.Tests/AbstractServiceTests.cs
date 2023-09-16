@@ -6,6 +6,7 @@ using Prosigliere.Blog.Api.Posts;
 using Prosigliere.Blog.Comments;
 using Prosigliere.Blog.Entities;
 using Prosigliere.Blog.Posts;
+using Prosigliere.Blog.Tests.Fakes;
 
 namespace Prosigliere.Blog.Tests;
 

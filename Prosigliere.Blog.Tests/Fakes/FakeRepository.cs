@@ -1,4 +1,4 @@
-namespace Prosigliere.Blog.Tests;
+namespace Prosigliere.Blog.Tests.Fakes;
 
 public class FakeRepository<T> : IRepository<T> where T : IEntity
 {

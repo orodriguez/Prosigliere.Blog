@@ -1,5 +1,6 @@
 using Prosigliere.Blog.Api;
 using Prosigliere.Blog.Api.Posts;
+using Prosigliere.Blog.Tests.Samples;
 using Xunit;
 
 namespace Prosigliere.Blog.Tests;

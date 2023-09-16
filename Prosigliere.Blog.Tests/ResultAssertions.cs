@@ -3,7 +3,7 @@ using Xunit;
 
 namespace Prosigliere.Blog.Tests;
 
-public static class ResultExtensions
+public static class ResultAssertions
 {
     public static TValue AssertSuccess<TValue>(this Result<TValue> result) => 
         Assert.IsType<Result<TValue>.Success>(result).Value;

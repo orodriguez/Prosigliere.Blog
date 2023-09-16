@@ -1,7 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Prosigliere.Blog.Entities;
 
-namespace Prosigliere.Blog.Tests;
+namespace Prosigliere.Blog.Tests.Fakes;
 
 public static class ServiceCollectionExtensions
 {
