@@ -28,8 +28,8 @@ public abstract class AbstractServiceTests
     protected Result<DetailedPostResponse> GetPostById(int id) => 
         CreatePostsService().ById(id);
 
-    protected Result<CreateCommentResponse> CreateComment(CreateCommentRequest request) => 
-        _provider.GetRequiredService<ICommentsService>().Create(request);
+    protected Result<CommentResponse> CreateComment(int postId, CreateCommentRequest request) => 
+        _provider.GetRequiredService<ICommentsService>().Create(postId, request);
 
     protected Result<IEnumerable<ShortPostResponse>> GetPosts() => CreatePostsService().Get();
 

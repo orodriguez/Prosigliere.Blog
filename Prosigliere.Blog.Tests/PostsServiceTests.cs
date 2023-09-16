@@ -79,7 +79,7 @@ public class PostsServiceTests : AbstractServiceTests
     {
         var createdPost = CreatePost(new ValidCreatePostRequest()).AssertSuccess();
 
-        CreateComment(new ValidCreateCommentRequest(PostId: createdPost.Id)).AssertSuccess();
+        CreateComment(createdPost.Id, new ValidCreateCommentRequest()).AssertSuccess();
 
         var retrievedPost = GetPostById(createdPost.Id).AssertSuccess();
 
@@ -113,7 +113,7 @@ public class PostsServiceTests : AbstractServiceTests
         var createdPost = CreatePost(new ValidCreatePostRequest { Title = "Post 1" }).AssertSuccess();
 
         foreach (var _ in Enumerable.Range(1, 3))
-            CreateComment(new ValidCreateCommentRequest(createdPost.Id)).AssertSuccess();
+            CreateComment(createdPost.Id, new ValidCreateCommentRequest()).AssertSuccess();
 
         var allPosts = GetPosts().AssertSuccess().ToArray();
         

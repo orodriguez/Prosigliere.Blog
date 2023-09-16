@@ -11,8 +11,7 @@ public class CommentsServiceTests : AbstractServiceTests
     {
         var createdPost = CreatePost(new ValidCreatePostRequest()).AssertSuccess();
 
-        var createdComment = CreateComment(new(
-            PostId: createdPost.Id,
+        var createdComment = CreateComment(createdPost.Id, new(
             Content: ValidCreateCommentRequest.ValidContent)).AssertSuccess();
 
         Assert.Equal(1, createdComment.Id);
@@ -28,31 +27,20 @@ public class CommentsServiceTests : AbstractServiceTests
     {
         var createdPost = CreatePost(new ValidCreatePostRequest()).AssertSuccess();
 
-        var errors = CreateComment(new(
-            PostId: createdPost.Id,
-            Content: content)).AssertValidationErrors();
+        var errors = CreateComment(createdPost.Id, new(Content: content))
+            .AssertValidationErrors();
 
         var error = Assert.Single(errors[nameof(CreateCommentRequest.Content)]);
         Assert.Equal(expectedError, error);
     }
-    
-    [Fact]
-    public void Create_PostIdZero()
-    {
-        var errors = CreateComment(new ValidCreateCommentRequest(PostId: 0))
-            .AssertValidationErrors();
 
-        var error = Assert.Single(errors[nameof(CreateCommentRequest.PostId)]);
-        Assert.Equal("'Post Id' must not be empty.", error);
-    }
-    
     [Fact]
     public void Create_PostNotFound()
     {
         const int unknownPostId = 42;
-        var error = CreateComment(new ValidCreateCommentRequest(PostId: unknownPostId))
+        var error = CreateComment(unknownPostId, new ValidCreateCommentRequest())
             .AssertRecordNotFound();
 
-        Assert.Equal("Unable to add comment: Post with PostId = 42 can not be found.", error);
+        Assert.Equal("Unable to add comment: Post with postId = 42 can not be found.", error);
     }
 }

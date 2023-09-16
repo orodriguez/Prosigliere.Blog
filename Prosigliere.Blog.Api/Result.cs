@@ -1,5 +1,3 @@
-using Prosigliere.Blog.Api.Posts;
-
 namespace Prosigliere.Blog.Api;
 
 public abstract record Result<TValue>

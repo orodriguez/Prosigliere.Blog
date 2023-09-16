@@ -1,3 +1,3 @@
 namespace Prosigliere.Blog.Api.Comments;
 
-public record CreateCommentRequest(int PostId, string Content);
+public record CreateCommentRequest(string Content);

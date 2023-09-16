@@ -24,22 +24,22 @@ public class CommentsService : ICommentsService
         _postsRepository = postsRepository;
     }
 
-    public Result<CreateCommentResponse> Create(CreateCommentRequest request)
+    public Result<CommentResponse> Create(int postId, CreateCommentRequest request)
     {
         var errors = _validator.Validate(request);
         if (errors.Any())
-            return ValidationErrors<CreateCommentResponse>(errors);
+            return ValidationErrors<CommentResponse>(errors);
         
-        var post = _postsRepository.ById(request.PostId);
+        var post = _postsRepository.ById(postId);
         if (post == null)
-            return RecordNotFound<CreateCommentResponse>(
-                CreatePostNotFoundErrorMessage(request));
+            return RecordNotFound<CommentResponse>(
+                CreatePostNotFoundErrorMessage(postId, request));
         
         var comment = CreateComment(request, post);
 
         _commentsRepository.Add(comment);
 
-        return Success(CreateResponse(request, comment));
+        return Success(CreateResponse(comment));
     }
 
     private Comment CreateComment(CreateCommentRequest request, Post post) =>
@@ -50,13 +50,13 @@ public class CommentsService : ICommentsService
             CreatedAt = _getCurrentTime()
         };
 
-    private static CreateCommentResponse CreateResponse(CreateCommentRequest request, Comment comment) =>
+    private static CommentResponse CreateResponse(Comment comment) =>
         new(
             Id: comment.Id,
-            PostId: request.PostId,
+            PostId: comment.PostId,
             Content: comment.Content, 
             CreatedAt: comment.CreatedAt);
 
-    private static string CreatePostNotFoundErrorMessage(CreateCommentRequest request) => 
-        $"Unable to add comment: Post with {nameof(CreateCommentRequest.PostId)} = {request.PostId} can not be found.";
+    private static string CreatePostNotFoundErrorMessage(int postId, CreateCommentRequest request) => 
+        $"Unable to add comment: Post with {nameof(postId)} = {postId} can not be found.";
 }
