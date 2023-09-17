@@ -92,3 +92,10 @@ It is also possible to run the WebApi with Fakes.
 The following diagram show the dependencies between projects.
 
 ![Dependencies](Diagram.jpg)
+## Pending
+* Authentication with JWT Token.
+* Authorization.
+* Validations to avoid users access data that belongs to another user.
+* Update and Delete posts.
+* Update and Delete comments.
+* CRUD Tags.
