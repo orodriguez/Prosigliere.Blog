@@ -10,5 +10,5 @@ public class CommentsRepository : Repository<Comment>, ICommentsRepository
     }
 
     public IEnumerable<Comment> ByPost(int postId) => 
-        _db.Comments.Where(comment => comment.PostId == postId);
+        Db.Comments.Where(comment => comment.PostId == postId);
 }

@@ -4,19 +4,19 @@ namespace Prosigliere.Blog.WebApi.Storage;
 
 public class Repository<T> : IRepository<T> where T : class, IEntity
 {
-    protected readonly ProsigliereBlogDbContext _db;
-
-    public Repository(ProsigliereBlogDbContext db) => _db = db;
+    protected readonly ProsigliereBlogDbContext Db;
+    
+    public Repository(ProsigliereBlogDbContext db) => Db = db;
 
     public void Add(T entity)
     {
-        _db.Set<T>().Add(entity);
-        _db.SaveChanges();
+        Db.Set<T>().Add(entity);
+        Db.SaveChanges();
     }
 
-    T? IRepository<T>.ById(int id) => 
-        _db.Set<T>().FirstOrDefault(entity => entity.Id == id);
+    public virtual T? ById(int id) => 
+        Db.Set<T>().FirstOrDefault(entity => entity.Id == id);
 
     public IEnumerable<T> All() => 
-        _db.Set<T>();
+        Db.Set<T>();
 }

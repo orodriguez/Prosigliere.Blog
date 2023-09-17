@@ -1,5 +1,3 @@
-using Prosigliere.Blog.Api;
-
 namespace Prosigliere.Blog;
 
 public interface IRepository<T>
