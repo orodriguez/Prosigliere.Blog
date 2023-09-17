@@ -1,4 +1,4 @@
-namespace Prosigliere.Blog;
+namespace Prosigliere.Blog.Entities;
 
 public interface IEntity
 {

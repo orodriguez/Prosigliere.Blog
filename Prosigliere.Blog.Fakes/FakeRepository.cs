@@ -1,3 +1,5 @@
+using Prosigliere.Blog.Entities;
+
 namespace Prosigliere.Blog.Fakes;
 
 public class FakeRepository<T> : IRepository<T> where T : IEntity
