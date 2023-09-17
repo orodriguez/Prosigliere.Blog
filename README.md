@@ -39,6 +39,9 @@ If you use this feature, it is not necessary to install Postgres.
   "Storage": "Fake"
 }
 ```
+## Explore WebApi with Swagger/Swagger UI
+* Swagger UI: [http://localhost:5041/swagger/index.html](http://localhost:5041).
+* Swagger Endpoint: [http://localhost:5041/swagger/v1/swagger.json](http://localhost:5041/swagger/v1/swagger.json). 
 ## Architecture
 The solution contains a collection of projects each one defining an architectural layer.
 ### Blog.Api
