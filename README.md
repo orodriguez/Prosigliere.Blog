@@ -98,4 +98,4 @@ The following diagram show the dependencies between projects.
 * Validations to avoid users access data that belongs to another user.
 * Update and Delete posts.
 * Update and Delete comments.
-* CRUD Tags.
+* Tag Posts.
