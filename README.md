@@ -80,7 +80,7 @@ Contains all the tests for the application logic/business rules.
 Fast unit tests.
 It runs isolated from the database.
 It does not test controllers.
-* **Tests**: xUnit light way, behavioral style unit tests, isolated from database. 
+* **Tests**: xUnit lightweight, behavioral style unit tests, isolated from database. 
 They don't test implementation details. Services are tested as black boxes.
 * **Samples**: Sample objects for testing purposes. 
 Provide data necessary for tests to pass but not relevant for understanding the tests.
